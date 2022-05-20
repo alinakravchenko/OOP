@@ -58,14 +58,26 @@ public:
 		cout << "Destructor:\t\t" << this << endl;
 	}
 	//     Operators:
-	Point operator=(const Point& other)
+	Point& operator=(const Point& other)
 	{
 		this->x = other.x;
 		this->y = other.y;
 		cout << "CopyAssignment:\t" << this << endl;
 		return *this;
 	}
-
+	Point& operator++()
+	{
+		x++;
+		y++;
+		return *this;
+	}
+	Point operator++(int)
+	{
+		Point old = *this;
+		x++;
+		y++;
+		return old;
+	}
 	//     HomeWork Methods
 	double distance(const Point& dot) //принимает точку
 	{
@@ -91,11 +103,25 @@ double distance(const Point& A, const Point& B)  //возвращает две �
 	double distance = sqrt(x_distance*x_distance + y_distance*y_distance);
 	return distance;
 }
+Point operator+(const Point left, const Point right)
+{
+	Point result;
+	result.set_x(left.get_x() + right.get_x());
+	result.set_y(left.get_y() + right.get_y());
+	return result;
+}
+double operator-(const Point& left, const Point& right)
+{
+	/*double x_distance = left.get_x() - right.get_x();
+	double y_distance = left.get_y() - right.get_y();
+	return sqrt(x_distance*x_distance + y_distance*y_distance);*/
+	return sqrt(pow(left.get_x() - right.get_x(), 2) + pow(left.get_y() - right.get_y(), 2));
+}
 //#define STRUCT_POINT
 //#define DISTANCE
 //#define CONSTRUCTORS_CHECK
 //#define ASSIGNMENT_CHECK1
-#define ASSIGNMENT_CHECK2
+//#define ASSIGNMENT_CHECK2
 void main()
 {
 	setlocale(LC_ALL, "");
@@ -167,12 +193,43 @@ void main()
 	Point C; //Default Constructor
 	C = B; //CopyAssignment потому что объект 'С' уже существует
 #endif
+#ifdef ASSIGNMENT_CHECK2
 	int a, b, c;
 
 	a = b = c = 0;
 	cout << a << "\t" << b << "\t" << c << endl;
 
 	Point A, B, C;
+	cout << delimiter << endl;
 	A = B = C = Point(2, 3);
+	cout << delimiter << endl;
 	A.print();
+#endif
+//operator@ - знак оператора
+//правила операторов:
+//1. перегрузить можно только существующие операторы,
+//невозможно создавать новые операторы.
+//+ - перегружается,
+//++ - перегружается,
+//* - перегружается,
+//** - не перегружается,
+//2. не все сущ. операторы можно перегрузить
+//не перегружаются: 
+//?: - Conditional Ternary,
+//:: - Scope operator (разрешения видимости)
+//. - Point Operator (оператор прямого доступа)
+//.* - Pointer to member selection 
+//3. перегруженные операторы сохраняют приоритет
+//4. нельзя переопределить поведение операторов со встроенными типами данных
+	Point A(2, 3);
+	A.print();
+	Point B(7, 8);
+	B.print();
+	Point C = A + B;
+	C.print();
+
+	C++;
+	C.print();
+	cout << A - B << endl; //неявный вызов оператора "-" для объектов класса поинт
+	cout << operator-(A, B) << endl; //явный вызов оператора
 }

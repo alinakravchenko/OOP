@@ -82,6 +82,38 @@ public:
 		cout << "CopyAssignment:\t" << this << endl;
 		return *this;
 	}
+	Fraction& operator+= (Fraction right)
+	{
+		this->to_improper();
+		right.to_improper();
+		this->numerator = this->numerator*right.denominator + right.numerator*this->denominator;
+		this->denominator = this->denominator*right.denominator;
+		return *this;
+	}
+	Fraction& operator-= (Fraction right)
+	{
+		this->to_improper();
+		right.to_improper();
+		this->numerator = this->numerator*right.denominator - right.numerator*this->denominator;
+		this->denominator = this->denominator*right.denominator;
+		return *this;
+	}
+	Fraction& operator*=(Fraction right)
+	{
+		this->to_improper();
+		right.to_improper();
+		this->numerator = this->numerator*right.numerator;
+		this->denominator = this->denominator*right.denominator;
+		return *this;
+	}
+	Fraction& operator/=(Fraction right)
+	{
+		this->to_improper();
+		right.to_improper();
+		this->numerator = this->numerator*right.denominator;
+		this->denominator = this->denominator*right.numerator;
+		return *this;
+	}
 	//   Increment/Decrement
 	Fraction& operator++() //prefix
 	{

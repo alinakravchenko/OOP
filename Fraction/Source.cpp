@@ -1,6 +1,11 @@
-﻿#pragma warning (disable:4326)
+﻿#define _CRT_SECURE_NO_WARNINGS
+#pragma warning (disable:4326)
 #include<iostream>
+
 using namespace std;
+using std::cin;
+using std::cout;
+using std::endl;
 class Fraction;
 Fraction operator*(Fraction left, Fraction right);
 Fraction operator/(Fraction left, Fraction right);
@@ -51,6 +56,17 @@ public:
 		this->denominator = 1;
 		cout << " Single argument constructor:" << this << endl;
 	}
+	//Fraction(double dec)
+	//{
+	//	dec += 1e-11; //при 75999999, чтобы убрать девятки
+	//	integer = dec; //сохранение целой части 
+	//	dec -= integer; //убираем целую часть из дроби 
+	//	denominator = 1e+9; // 9 степень
+	//	numerator = dec * denominator;
+	//	 reduce();
+	//	cout << "doubleConstructor:\t" << this << endl;
+
+	//}
 	Fraction(int numerator, int denominator) //дробная часть
 	{
 		this->integer = 0;
@@ -65,6 +81,7 @@ public:
 		this->denominator = denominator;
 		cout << "Constructor:\t" << this << endl;
 	}
+	
 	Fraction(const Fraction& other) //конструктор копир
 	{
 		this->integer = other.integer;
@@ -164,16 +181,7 @@ public:
 	{
 		return integer + (double)numerator / denominator;
 	}
- Fraction(double dec)
- {
-	 dec += 1e-10; //при 75999999, чтобы убрать девятки
-	 integer = dec; //сохранение целой части 
-	 dec -= integer; //убираем целую часть из дроби 
-	 denominator = 1e+9; // 9 степень
-	 numerator = dec * denominator;
-	 cout << "Homework:\t" << this << endl;
 
- }
 	//                                METHODS
 	Fraction& to_proper() //выделение целой части
 	{
@@ -197,6 +205,33 @@ public:
 		return inverted;
 
 	}
+	Fraction reduce()
+	{
+		int more;	//Большее значение
+		int less;	//Меньшее значение
+		int rest;	//Остаток от деления
+		if (numerator > denominator)
+		{
+			more = numerator;
+			less = denominator;
+		}
+		else
+		{
+			less = numerator;
+			more = denominator;
+		}
+		do 
+		{
+			rest = more%less;
+			more = less;
+			less = rest;
+		} while (rest);
+		int GCD = more;	//GCD - Greatest Common Divisor (Наибольший общий делитель)
+		if (GCD == 0)return *this;
+		numerator /= GCD;
+		denominator /= GCD;
+		return *this;
+		}
 	void print()const
 	{
 		if (integer)cout << integer;
@@ -309,21 +344,44 @@ ostream& operator<<(ostream& os, const Fraction& obj)
 	 if (obj.get_integer() == 0&&obj.get_numerator()==0)os << 0;
 	return os;
 }
-//istream& operator>>(istream& is, fraction& obj)
-//{
-//	const int size = 50;
-//	char buffer[size] = {};
-//	char delimiter[] = "()/. ";//https://www.cplusplus.com/reference/cstring/strtok/
-//	is >> buffer; //ввод строки
-//	char* value[3] = {}; //создаём массив 
-//						
-//}
+istream& operator>>(istream& is, Fraction& obj)
+{
+	const int SIZE = 256;
+	char buffer[SIZE] = {};
+	/*cin >> buffer;*/ //ввод строки
+	cin.getline(buffer, SIZE);
+	char delimiters[] = "()/ ";//https://www.cplusplus.com/reference/cstring/strtok/
+	char* sz_numbers[3] = {}; //создаём массив 
+	int i = 0;
+	for (char* pch = strtok(buffer, delimiters); pch; pch = strtok(NULL, delimiters))
+	{
+		
+		sz_numbers[i++] = pch;
+	}
+	switch (i)
+	{
+	case 1: obj.set_integer(atoi(sz_numbers[0])); break;
+		//http://cplusplus.com/reference/cstdlib/atoi/
+	case 2:
+		obj.set_numerator(atoi(sz_numbers[0]));
+		obj.set_denominator(atoi(sz_numbers[1]));
+		break;
+	case 3:
+		obj.set_integer(atoi(sz_numbers[0]));
+		obj.set_numerator(atoi(sz_numbers[1]));
+		obj.set_denominator(atoi(sz_numbers[2]));
+	}
+	return is;
+	
+						
+}
 //#define CONSTRUCTORS_CHECK
 //#define ARITHMETICAL_CHECK
 //#define COMPARISON_OPS
 //#define TYPE_CONVERSIONS_BASE
 //#define CONVERSIONS_FROM_OTHER_TO_CLASS
-#define CONVERSIONS_FROM_CLASS_TO_OTHER
+//#define CONVERSIONS_FROM_CLASS_TO_OTHER
+#define ISTREAM_OPERATOR_CHECK
 void main()
 {
 	setlocale(LC_ALL, "");
@@ -331,7 +389,7 @@ void main()
 	Fraction A; //Def const
 	A.print();
 
-	Fraction B=7; //single
+	Fraction B = 7; //single
 	B.print();
 
 	Fraction C(1, 7);
@@ -366,11 +424,11 @@ void main()
 	D.print();
 	Fraction E = --B;
 	E.print();*/
-	
-	
+
+
 #endif
 #ifdef COMPARISON_OPS
-		Fraction A(1, 4, 12);
+	Fraction A(1, 4, 12);
 	Fraction B(3, 300, 320);
 	cout << (A == B) << endl;
 	cout << (A != B) << endl;
@@ -383,10 +441,7 @@ void main()
 	/*Fraction A(1, 2);
 
 	cout << A << endl;*/
-	/*Fraction A;
-	cout<<"Введите простую дробь: "
-	cin >> A;
-	cout << A << endl;*/
+
 #ifdef TYPE_CONVERSIONS_BASE
 	cout << typeid(7 / .2).name() << endl;
 	int a = 2;		//No conversions
@@ -398,10 +453,10 @@ void main()
 	int d = 5.5;	//Conversion from double to int
 					//			 from more to less with data loss
 #endif
-	#ifdef CONVERSIONS_FROM_OTHER_TO_CLASS
+#ifdef CONVERSIONS_FROM_OTHER_TO_CLASS
 
-	/*Fraction A = 5;
-	cout << A << endl; *///From int to Fraction	(from less to more)
+/*Fraction A = 5;
+cout << A << endl; *///From int to Fraction	(from less to more)
 	Fraction B; //Default constructor
 	cout << "\n---------\n";
 	/*B = 8;*/  B = Fraction(8);   //Conversion from int to Fraction
@@ -423,7 +478,14 @@ void main()
 	cout << a << endl;
 	double b = A;
 	cout << b << endl;*/
-	Fraction A = 2.76;
-		cout << A << endl;	//	2(3/4)		
+	Fraction A = 2.75;
+	cout << A << endl;	//	2(3/4)		
+#endif
+#ifdef ISTREAM_OPERATOR_CHECK
+		Fraction A;
+		cout << "Введите дробь: ";
+		cin >> A;
+		cout << A << endl;
+		cout << (double)A << endl;
 #endif
 }

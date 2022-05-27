@@ -1,4 +1,5 @@
-﻿#include<iostream>
+﻿#pragma warning (disable:4326)
+#include<iostream>
 using namespace std;
 class Fraction;
 Fraction operator*(Fraction left, Fraction right);
@@ -42,7 +43,8 @@ public:
 		this->denominator = 1;
 		cout << " DefaultConstructor:\t " << this << endl;
 	}
-	Fraction(int integer) //целая часть
+	explicit Fraction(int integer) //целая часть
+		//явный, запрещает неявные преобразования типов
 	{
 		this->integer = integer;
 		this->numerator = 0;
@@ -153,7 +155,25 @@ public:
 		integer--;
 		return old;
 	}
-	
+	//                                Type-cast operators
+	explicit operator int()const
+	{
+		return integer;
+	}
+ operator double()const
+	{
+		return integer + (double)numerator / denominator;
+	}
+ Fraction(double dec)
+ {
+	 dec += 1e-10; //при 75999999, чтобы убрать девятки
+	 integer = dec; //сохранение целой части 
+	 dec -= integer; //убираем целую часть из дроби 
+	 denominator = 1e+9; // 9 степень
+	 numerator = dec * denominator;
+	 cout << "Homework:\t" << this << endl;
+
+ }
 	//                                METHODS
 	Fraction& to_proper() //выделение целой части
 	{
@@ -289,22 +309,21 @@ ostream& operator<<(ostream& os, const Fraction& obj)
 	 if (obj.get_integer() == 0&&obj.get_numerator()==0)os << 0;
 	return os;
 }
-istream& operator>>(istream& is, Fraction& obj)
-{
-	const int SIZE = 50;
-	char buffer[SIZE] = {};
-	char delimiter[] = "()/. ";//https://www.cplusplus.com/reference/cstring/strtok/
-	is >> buffer; //ввод строки
-	//char* value[3] = {}; //создаём массив 
-						
-						 return is;
-
-	
-
-}
+//istream& operator>>(istream& is, fraction& obj)
+//{
+//	const int size = 50;
+//	char buffer[size] = {};
+//	char delimiter[] = "()/. ";//https://www.cplusplus.com/reference/cstring/strtok/
+//	is >> buffer; //ввод строки
+//	char* value[3] = {}; //создаём массив 
+//						
+//}
 //#define CONSTRUCTORS_CHECK
 //#define ARITHMETICAL_CHECK
 //#define COMPARISON_OPS
+//#define TYPE_CONVERSIONS_BASE
+//#define CONVERSIONS_FROM_OTHER_TO_CLASS
+#define CONVERSIONS_FROM_CLASS_TO_OTHER
 void main()
 {
 	setlocale(LC_ALL, "");
@@ -364,9 +383,47 @@ void main()
 	/*Fraction A(1, 2);
 
 	cout << A << endl;*/
-	Fraction A;
+	/*Fraction A;
 	cout<<"Введите простую дробь: "
 	cin >> A;
-	cout << A << endl;
+	cout << A << endl;*/
+#ifdef TYPE_CONVERSIONS_BASE
+	cout << typeid(7 / .2).name() << endl;
+	int a = 2;		//No conversions
+	double b = 3;	//Conversion from int to double.
+					//			 from less to more.
 
+	int c = b;		//Conversion from double to int
+					//			 from more to less without data loss
+	int d = 5.5;	//Conversion from double to int
+					//			 from more to less with data loss
+#endif
+	#ifdef CONVERSIONS_FROM_OTHER_TO_CLASS
+
+	/*Fraction A = 5;
+	cout << A << endl; *///From int to Fraction	(from less to more)
+	Fraction B; //Default constructor
+	cout << "\n---------\n";
+	/*B = 8;*/  B = Fraction(8);   //Conversion from int to Fraction
+	cout << "\n---------\n";
+	cout << B << endl;
+	cout << "\n---------\n";
+	Fraction C(12);	//explicit конструктор можно вызвать так, нельзя вызвать: Fraction C = 12;
+	cout << C << endl;
+#endif
+	/*
+	operator type()
+	{
+	//   conversion code;
+	}
+	*/
+#ifdef CONVERSIONS_FROM_CLASS_TO_OTHER
+	/*Fraction A(2, 3, 4);
+	int a = (int) A;
+	cout << a << endl;
+	double b = A;
+	cout << b << endl;*/
+	Fraction A = 2.76;
+		cout << A << endl;	//	2(3/4)		
+#endif
 }

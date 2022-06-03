@@ -28,18 +28,18 @@ public:
 	{
 		cout << "DefaultConstructor:\t" << this << endl;
 	}
-	String(const char* str) :size(strlen(str) + 1), str(new char[size] {})
+	String(const char* str) :String(strlen(str) + 1)
 	{
 		for (int i = 0; i < size; i++)this->str[i] = str[i];
 		cout << "Constructor:\t\t" << this << endl;
 	}
-	String(const String& other) :size(other.size), str(new char[size] {})
+	String(const String& other) :String(other.str)
 	{
 		/*this->size = other.size;*/
 		//Deep copy (побитовое копирование)
 		//т.е. выдителить новую память и скопир. в неё содерж. другого объекта
 		/*this->str = new char[size] {};*/
-		for (int i = 0; i < size; i++)this->str[i] = other.str[i];
+		
 		//--------------------------------------------------------------------
 		cout << "CopyConstructor:\t" << this << endl;
 	}
@@ -170,6 +170,7 @@ void main()
 	String str1;
 	str1.print();
 	String str2(55);
+	str2.print();
 	String str3 = "Hello";
 	String str4 = str3;
 	String str6();

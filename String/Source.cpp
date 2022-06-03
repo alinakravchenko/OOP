@@ -1,4 +1,5 @@
 ﻿#include<iostream>
+
 using namespace std;
 using std::cin;
 using std::cout;
@@ -6,100 +7,119 @@ using std::endl;
 #define delimiter "\n-------------------------\n"
 class String;
 String operator+(const String& left, const String& right);
+
 class String
 {
 	int size; //размер строки в байтах
 	char* str; //указатель на строку
 public:
-	int get_size()const
-	{
-		return size;
-	}
-	const char* get_str()const //указатель, на который он возвращ., должен быть const
-	{
-		return str;
-	}
-	char* get_str()
-	{
-		return str;
-	}
+	int get_size()const;
+	//указатель, на который он возвращ., должен быть const
+	const char* get_str()const;
+	char* get_str();
 	//                               Constructors
-	explicit String(int size = 80) :size(size), str(new char[size] {})
-	{
-		cout << "DefaultConstructor:\t" << this << endl;
-	}
-	String(const char* str) :String(strlen(str) + 1)
-	{
-		for (int i = 0; i < size; i++)this->str[i] = str[i];
-		cout << "Constructor:\t\t" << this << endl;
-	}
-	String(const String& other) :String(other.str)
-	{
-		/*this->size = other.size;*/
-		//Deep copy (побитовое копирование)
-		//т.е. выдителить новую память и скопир. в неё содерж. другого объекта
-		/*this->str = new char[size] {};*/
-		
-		//--------------------------------------------------------------------
-		cout << "CopyConstructor:\t" << this << endl;
-	}
-	String(String&& other) :size(other.size), str(other.str)
-	{
-		//Shallow copy(поверхностное копир.)  - MoveConstr
-		/*this->size = other.size;*/
-		/*this->str = other.str;*///копир. адрес памяти, пренадлежащей другому объекту
-		other.size = 0;
-		other.str = nullptr; //зануляем адрес памяти в другом объекте, чтобы эту
-		//память не удалил деструктор
-		cout << "MoveConstructor:\t" << this << endl;
-	}
-	~String()
-	{
-		delete[] this->str;
-		cout << "Destructor:\t\t" << this << endl;
-	}
+	explicit String(int size = 80);
+	String(const char* str);
+	String(const String& other);
+	String(String&& other);
+	~String();
 	//                             Operators
-	String& operator=(const String& other)
-	{
-		if (this == &other)return *this;
-		delete[] this->str;
-		//Deep copy(глубокое копирование):
-		this->size = other.size;
-		this->str = new char[size] {};
-		for (int i = 0; i < size; i++)this->str[i] = other.str[i];
-		cout << "CopyAssigment:\t\t" << this << endl;
-		return *this;
-	}
-	String& operator=(String&& other)
-	{
-		delete[]this->str;
-		this->size = other.size;
-		this->str = other.str;
-		other.size=0;
-		other.str = nullptr;
-		cout << "MoveAssignment:" << endl;
-		return *this;
-	}
-	String& operator+=(const String& other)
-	{
-		return *this = *this + other;
-	}
-	const char& operator[](int i)const
-	{
-		return str[i];
-	}
-	char& operator[](int i)
-	{
-		return str[i];
-	}
+	String& operator=(const String& other);
+	String& operator=(String&& other);
+	String& operator+=(const String& other);
+	const char& operator[](int i)const;
+	char& operator[](int i);
 	//                             Methods
-	void print()
-	{
-		cout << "SIZE:\t" << size << endl;
-		cout << "STRING:\t" << str << endl;
-		//Memory leak
-	}
+	void print()const;
 };
+int String::get_size()const
+{
+	return size;
+}
+const char* String::get_str()const //указатель, на который он возвращ., должен быть const
+{
+	return str;
+}
+char* String::get_str()
+{
+	return str;
+}
+//                               Constructors
+String::String(int size) :size(size), str(new char[size] {})
+{
+	cout << "DefaultConstructor:\t" << this << endl;
+}
+String::String(const char* str) :String(strlen(str) + 1)
+{
+	for (int i = 0; i < size; i++)this->str[i] = str[i];
+	cout << "Constructor:\t\t" << this << endl;
+}
+String::String(const String& other) :String(other.str)
+{
+	/*this->size = other.size;*/
+	//Deep copy (побитовое копирование)
+	//т.е. выдителить новую память и скопир. в неё содерж. другого объекта
+	/*this->str = new char[size] {};*/
+
+	//--------------------------------------------------------------------
+	cout << "CopyConstructor:\t" << this << endl;
+}
+String::String(String&& other) :size(other.size), str(other.str)
+{
+	//Shallow copy(поверхностное копир.)  - MoveConstr
+	/*this->size = other.size;*/
+	/*this->str = other.str;*///копир. адрес памяти, пренадлежащей другому объекту
+	other.size = 0;
+	other.str = nullptr; //зануляем адрес памяти в другом объекте, чтобы эту
+						 //память не удалил деструктор
+	cout << "MoveConstructor:\t" << this << endl;
+}
+String::~String()
+{
+	delete[] this->str;
+	cout << "Destructor:\t\t" << this << endl;
+}
+//                             Operators
+String& String::operator=(const String& other)
+{
+	if (this == &other)return *this;
+	delete[] this->str;
+	//Deep copy(глубокое копирование):
+	this->size = other.size;
+	this->str = new char[size] {};
+	for (int i = 0; i < size; i++)this->str[i] = other.str[i];
+	cout << "CopyAssigment:\t\t" << this << endl;
+	return *this;
+}
+String& String::operator=(String&& other)
+{
+	delete[]this->str;
+	this->size = other.size;
+	this->str = other.str;
+	other.size = 0;
+	other.str = nullptr;
+	cout << "MoveAssignment:" << endl;
+	return *this;
+}
+String& String::operator+=(const String& other)
+{
+	return *this = *this + other;
+}
+const char& String::operator[](int i)const
+{
+	return str[i];
+}
+char& String::operator[](int i)
+{
+	return str[i];
+}
+//                             Methods
+void String::print()const
+{
+	cout << "SIZE:\t" << size << endl;
+	cout << "STRING:\t" << str << endl;
+	//Memory leak
+}
 String operator+(const String& left, const String& right)
 {
 	

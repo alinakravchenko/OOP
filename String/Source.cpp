@@ -24,34 +24,30 @@ public:
 		return str;
 	}
 	//                               Constructors
-	explicit String(int size = 80)
+	explicit String(int size = 80) :size(size), str(new char[size] {})
 	{
-		this->size = size;
-		this->str = new char[size] {};
 		cout << "DefaultConstructor:\t" << this << endl;
 	}
-	String(const char* str)
+	String(const char* str) :size(strlen(str) + 1), str(new char[size] {})
 	{
-		this->size = strlen(str) + 1;
-		this->str = new char[size] {};
-		for (int i = 0; i < size; i++)this->str[i] = str[i]; //копируем str
+		for (int i = 0; i < size; i++)this->str[i] = str[i];
 		cout << "Constructor:\t\t" << this << endl;
 	}
-	String(const String& other)
+	String(const String& other) :size(other.size), str(new char[size] {})
 	{
-		this->size = other.size;
+		/*this->size = other.size;*/
 		//Deep copy (побитовое копирование)
 		//т.е. выдителить новую память и скопир. в неё содерж. другого объекта
-		this->str = new char[size] {};
+		/*this->str = new char[size] {};*/
 		for (int i = 0; i < size; i++)this->str[i] = other.str[i];
 		//--------------------------------------------------------------------
 		cout << "CopyConstructor:\t" << this << endl;
 	}
-	String(String&& other)
+	String(String&& other) :size(other.size), str(other.str)
 	{
 		//Shallow copy(поверхностное копир.)  - MoveConstr
-		this->size = other.size;
-		this->str = other.str;//копир. адрес памяти, пренадлежащей другому объекту
+		/*this->size = other.size;*/
+		/*this->str = other.str;*///копир. адрес памяти, пренадлежащей другому объекту
 		other.size = 0;
 		other.str = nullptr; //зануляем адрес памяти в другом объекте, чтобы эту
 		//память не удалил деструктор
@@ -171,4 +167,14 @@ void main()
 	cout << "Введите строку: "; cin >> str1;
 	cout << str1 << endl;
 #endif
+	String str1;
+	str1.print();
+	String str2(55);
+	String str3 = "Hello";
+	String str4 = str3;
+	String str6();
+	String str7{};
+	str7.print();
+	cout << str4 << endl;
+
 }

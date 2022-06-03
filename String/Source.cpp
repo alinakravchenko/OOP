@@ -127,7 +127,8 @@ std::istream& operator>>(std::istream& is, String& obj)
 	return is >> obj.get_str();
 }
 //#define CONSTR_CHECK
-//#define HELLO_WORLD
+//#define MOVE_METHODS_CHECK
+//#define CONSTR_TWO_CHECK
 void main()
 {
 	setlocale(LC_ALL, "");
@@ -150,7 +151,7 @@ void main()
 	str5 = str4;
 	str5.print();
 #endif
-#ifdef HELLO_WORLD
+#ifdef MOVE_METHODS_CHECK
 	String str1 = "Hello";
 	cout << str1 << endl;
 	String str2("World");
@@ -162,10 +163,12 @@ void main()
 	cout << delimiter << endl;
 	cout << str3 << endl;
 #endif
+#ifdef CONSTR_TWO_CHECK
 	String str1 = "Hello";
 	String str2("World");
 	str1 += str2;
 	cout << str1 << endl;
 	cout << "Введите строку: "; cin >> str1;
 	cout << str1 << endl;
+#endif
 }

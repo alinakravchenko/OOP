@@ -15,87 +15,113 @@ class Fraction
 	int numerator; //числитель 
 	int denominator; //знаменатель
 public:
-	int get_integer()const
+	int get_integer()const;
+	int get_numerator()const;
+	int get_denominator()const;
+	void set_integer(int integer);
+	void set_numerator(int numerator);
+	void set_denominator(int denominator);
+	Fraction();
+	explicit Fraction(int integer);
+	Fraction(int numerator, int denominator);
+	Fraction(int integer, int numerator, int denominator);
+	Fraction(const Fraction& other);
+	~Fraction();
+	//                                 OPERATORS
+	//по принципу методов, при целой части
+	Fraction& operator=(const Fraction& other);
+	Fraction& operator+= (Fraction right);
+	Fraction& operator-= (Fraction right);
+	Fraction& operator*=(const Fraction& other);
+	Fraction& operator/=(const Fraction& other);
+	//                          Increment/Decrement
+	Fraction& operator++();
+	Fraction operator++ (int);
+	Fraction& operator--();
+	Fraction operator-- (int);
+	//                                Type-cast operators
+	explicit operator int()const;
+	operator double()const;
+
+	//                                METHODS
+	Fraction& to_proper();
+	Fraction& to_improper();
+	Fraction inverted()const;
+	Fraction reduce();
+	void print()const;
+};
+
+
+
+	int Fraction::get_integer()const
 	{
 		return integer;
 	}
-	int get_numerator()const
+	int Fraction::get_numerator()const
 	{
 		return numerator;
 	}
-	int get_denominator()const
+	int Fraction::get_denominator()const
 	{
 		return denominator;
 	}
 	/*задаём знач. переменных*/
-	void set_integer(int integer)
+	void Fraction::set_integer(int integer)
 	{
 		this->integer = integer;
 	}
-	void set_numerator(int numerator)
+	void Fraction::set_numerator(int numerator)
 	{
 		this->numerator = numerator;
 	}
-	void set_denominator(int denominator)
+	void Fraction::set_denominator(int denominator)
 	{
 		if (denominator == 0)denominator = 1;
 		this->denominator = denominator;
 	}
-	Fraction()
+	Fraction::Fraction()
 	{
 		this->integer = 0;
 		this->numerator = 0;
 		this->denominator = 1;
 		cout << " DefaultConstructor:\t " << this << endl;
 	}
-	explicit Fraction(int integer) //целая часть
-		//явный, запрещает неявные преобразования типов
+ Fraction::Fraction(int integer) 
 	{
 		this->integer = integer;
 		this->numerator = 0;
 		this->denominator = 1;
 		cout << " Single argument constructor:" << this << endl;
 	}
-	//Fraction(double dec)
-	//{
-	//	dec += 1e-11; //при 75999999, чтобы убрать девятки
-	//	integer = dec; //сохранение целой части 
-	//	dec -= integer; //убираем целую часть из дроби 
-	//	denominator = 1e+9; // 9 степень
-	//	numerator = dec * denominator;
-	//	 reduce();
-	//	cout << "doubleConstructor:\t" << this << endl;
-
-	//}
-	Fraction(int numerator, int denominator) //дробная часть
+	Fraction::Fraction(int numerator, int denominator) //дробная часть
 	{
 		this->integer = 0;
 		this->numerator = numerator;
 		this->set_denominator(denominator);
 		cout << " Constructor:\t\t" << this << endl;
 	}
-	Fraction(int integer, int numerator, int denominator)
+	Fraction::Fraction(int integer, int numerator, int denominator)
 	{
 		this->integer = integer;
 		this->numerator = numerator;
 		this->denominator = denominator;
 		cout << "Constructor:\t" << this << endl;
 	}
-	
-	Fraction(const Fraction& other) //конструктор копир
+
+	Fraction::Fraction(const Fraction& other) //конструктор копир
 	{
 		this->integer = other.integer;
 		this->numerator = other.numerator;
 		this->denominator = other.denominator;
 		cout << "CopyConstructor:\t" << this << endl;
 	}
-	~Fraction()
+	Fraction::~Fraction()
 	{
 		cout << "Destructor:\t" << this << endl;
 	}
 	//                                 OPERATORS
 	//по принципу методов, при целой части
-	Fraction& operator=(const Fraction& other)
+	Fraction& Fraction::operator=(const Fraction& other)
 	{
 		this->integer = other.integer;
 		this->numerator = other.numerator;
@@ -103,7 +129,7 @@ public:
 		cout << "CopyAssignment:\t" << this << endl;
 		return *this;
 	}
-	Fraction& operator+= (Fraction right)
+	Fraction& Fraction::operator+= (Fraction right)
 	{
 		this->to_improper();
 		right.to_improper();
@@ -111,7 +137,7 @@ public:
 		this->denominator = this->denominator*right.denominator;
 		return *this;
 	}
-	Fraction& operator-= (Fraction right)
+	Fraction& Fraction::operator-= (Fraction right)
 	{
 		this->to_improper();
 		right.to_improper();
@@ -119,53 +145,38 @@ public:
 		this->denominator = this->denominator*right.denominator;
 		return *this;
 	}
-	/*Fraction& operator*=(Fraction right)
-	{
-		this->to_improper();
-		right.to_improper();
-		this->numerator = this->numerator*right.numerator;
-		this->denominator = this->denominator*right.denominator;
-		return *this;
 
-	}*/
-	Fraction& operator*=(const Fraction& other)
+	Fraction& Fraction::operator*=(const Fraction& other)
 	{
 		return *this = *this*other;
 	}
-	/*Fraction& operator/=(Fraction right)
-	{
-		this->to_improper();
-		right.to_improper();
-		this->numerator = this->numerator*right.denominator;
-		this->denominator = this->denominator*right.numerator;
-		return *this;
-	}*/
-	Fraction& operator/=(const Fraction& other)
+
+	Fraction& Fraction::operator/=(const Fraction& other)
 	{
 		return *this = *this / other;
 	}
 
 	//                          Increment/Decrement
-	Fraction& operator++() //prefix
+	Fraction& Fraction::operator++() //prefix
 	{
 		to_proper();
 		integer++;
 		return *this;
 	}
-	Fraction operator++ (int)
+	Fraction Fraction::operator++ (int)
 	{
 		Fraction old = *this;	//Сохраняем текущее состояние объекта
 		to_proper();
 		integer++;
 		return old;
 	}
-	Fraction& operator--()
+	Fraction& Fraction::operator--()
 	{
 		to_proper();
 		integer--;
 		return *this;
 	}
-	Fraction operator-- (int)
+	Fraction Fraction::operator-- (int)
 	{
 		Fraction old = *this;
 		to_proper();
@@ -173,29 +184,29 @@ public:
 		return old;
 	}
 	//                                Type-cast operators
-	explicit operator int()const
+	Fraction::operator int ()const
 	{
 		return integer;
 	}
- operator double()const
+	Fraction::operator double()const
 	{
 		return integer + (double)numerator / denominator;
 	}
 
 	//                                METHODS
-	Fraction& to_proper() //выделение целой части
+	Fraction&  Fraction::to_proper() //выделение целой части
 	{
 		integer += numerator / denominator;
 		numerator %= denominator;
 		return *this;
 	}
-	Fraction& to_improper()
+	Fraction& Fraction::to_improper()
 	{
 		numerator += integer*denominator;
 		integer = 0;
 		return *this;
 	}
-	Fraction inverted()const
+	Fraction Fraction::inverted()const
 	{
 		Fraction inverted = *this;
 		inverted.to_improper();
@@ -205,7 +216,7 @@ public:
 		return inverted;
 
 	}
-	Fraction reduce()
+	Fraction Fraction::reduce()
 	{
 		int more;	//Большее значение
 		int less;	//Меньшее значение
@@ -220,7 +231,7 @@ public:
 			less = numerator;
 			more = denominator;
 		}
-		do 
+		do
 		{
 			rest = more%less;
 			more = less;
@@ -231,8 +242,8 @@ public:
 		numerator /= GCD;
 		denominator /= GCD;
 		return *this;
-		}
-	void print()const
+	}
+	void Fraction::print()const
 	{
 		if (integer)cout << integer;
 		if (numerator)
@@ -244,7 +255,6 @@ public:
 		if (integer == 0 && numerator == 0)cout << 0;
 		cout << endl;
 	}
-};
 Fraction operator/(Fraction left, Fraction right)
 {
 	left.to_improper();
@@ -379,9 +389,9 @@ istream& operator>>(istream& is, Fraction& obj)
 //#define ARITHMETICAL_CHECK
 //#define COMPARISON_OPS
 //#define TYPE_CONVERSIONS_BASE
-//#define CONVERSIONS_FROM_OTHER_TO_CLASS
+#define CONVERSIONS_FROM_OTHER_TO_CLASS
 //#define CONVERSIONS_FROM_CLASS_TO_OTHER
-#define ISTREAM_OPERATOR_CHECK
+//#define ISTREAM_OPERATOR_CHECK
 void main()
 {
 	setlocale(LC_ALL, "");
